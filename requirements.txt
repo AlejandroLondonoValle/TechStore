@@ -1,0 +1,9 @@
+# Lista de dependencias del proyecto. 
+
+fastapi
+uvicorn
+
+# Buena práctica: cuando todo funcione, ejecuta
+#     pip freeze > requirements.txt
+# para dejar las versiones exactas fijadas (ej: fastapi==0.115.0).
+# Así el proyecto se comporta igual en cualquier máquina.

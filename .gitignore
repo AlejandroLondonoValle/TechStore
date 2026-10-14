@@ -1,0 +1,9 @@
+# Entorno virtual 
+.venv/
+
+# Versiones de python compiladas. Se regeneran solas, así que no tiene sentido versionarlas.
+__pycache__/
+*.pyc
+
+# Variables de entorno
+.env
