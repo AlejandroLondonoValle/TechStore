@@ -35,3 +35,46 @@ async def obtener_producto(producto_id: int):
         status_code=404,
         detail=f"El producto con id {producto_id} no existe 🤷"
     )
+
+
+# ---------- QUERY PARAMETERS: listar con filtros ----------
+@app.get("/productos")
+async def listar_productos(
+    categoria: str | None = None,     # filtro opcional
+    max_precio: float | None = None,  # filtro opcional
+    solo_disponibles: bool = False,   # filtro opcional con default False
+    orden: str = "id",                # "id", "precio_asc" o "precio_desc"
+    pagina: int = 1,                  # paginación
+    tamano: int = 3                   # cuántos por página
+):
+    resultado = productos.copy()
+
+    # FILTRO 1: por categoría
+    if categoria:
+        resultado = [p for p in resultado if p["categoria"] == categoria]
+
+    # FILTRO 2: por precio máximo
+    if max_precio is not None:
+        resultado = [p for p in resultado if p["precio"] <= max_precio]
+
+    # FILTRO 3: solo los que tienen stock
+    if solo_disponibles:
+        resultado = [p for p in resultado if p["stock"] > 0]
+
+    # ORDENAMIENTO
+    if orden == "precio_asc":
+        resultado.sort(key=lambda p: p["precio"])
+    elif orden == "precio_desc":
+        resultado.sort(key=lambda p: p["precio"], reverse=True)
+
+    # PAGINACIÓN
+    inicio = (pagina - 1) * tamano
+    fin = inicio + tamano
+    pagina_resultados = resultado[inicio:fin]
+
+    return {
+        "total_encontrados": len(resultado),
+        "pagina": pagina,
+        "tamano": tamano,
+        "productos": pagina_resultados
+    }
