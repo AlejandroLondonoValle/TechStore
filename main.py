@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException  # <-- Modifica tu import arriba
 
 app = FastAPI(title="TechStore API")
 
@@ -18,3 +19,19 @@ productos = [
 @app.get("/")
 async def inicio():
     return {"mensaje": "Bienvenido a TechStore 🛒","total_productos": len(productos)}
+
+
+
+# ---------- PATH PARAMETER: un producto específico ----------
+@app.get("/productos/{producto_id}")
+async def obtener_producto(producto_id: int):
+    # LÓGICA REAL: buscar en la lista el producto con ese ID
+    for producto in productos:
+        if producto["id"] == producto_id:
+            return producto
+
+    # Si llegamos aquí, el producto NO existe → error 404
+    raise HTTPException(
+        status_code=404,
+        detail=f"El producto con id {producto_id} no existe 🤷"
+    )
